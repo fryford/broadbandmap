@@ -46,7 +46,8 @@ hoveredId = null;
 
 		map.addSource('squares', {
 			type: 'vector',
-			tiles: ['http://localhost:8000/broadband/{z}/{x}/{y}.pbf'],
+			//tiles: ['http://localhost:8000/broadband/{z}/{x}/{y}.pbf'],
+			tiles: ['https://fryford.github.io/broadbandmap/mobilemap/broadband/{z}/{x}/{y}.pbf'],
 			"promoteId": {
           "ukmobilebroadband2020q4": "quadkey"
         },
