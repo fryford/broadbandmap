@@ -281,8 +281,9 @@ function changeSource () {
 		}, 'place_suburb');
 
 	}
-
-highlightArea(e.features);
+if(typeof lat != undefined) {
+	successpc(lat,lng);
+}
 }
 
 d3.selectAll(".key-item").on("click",changeSource);
@@ -317,9 +318,9 @@ d3.selectAll(".key-item").on("click",changeSource);
 		        hover: true
 		      });
 
+
 					setAxisVal(e[0].properties.avg_d_kbps);
 				} else {
-
 					setAxisVal("");
 			    map.setFeatureState({
 			      source: 'squares',
@@ -355,7 +356,7 @@ d3.selectAll(".key-item").on("click",changeSource);
 		      }, {
 		        hover: true
 		      });
-
+					console.log(e[0].properties.avg_d_kbps)
 					setAxisVal(e[0].properties.avg_d_kbps);
 				} else {
 
@@ -389,6 +390,7 @@ d3.selectAll(".key-item").on("click",changeSource);
 		 highlightArea(e.features);
 	 }
 	 function onLeave(e) {
+		  hideaxisVal();
 			highlightArea(e.features);
 		}
 
@@ -612,6 +614,7 @@ $(document).on('input', '.clearable', function(){
 }).on('touchstart click', '.onX', function( ev ){
 		ev.preventDefault();
 		$(this).removeClass('x onX').val('').change();
+		lat = undefined;
 		enableMouseEvents();
 		onLeave();
 		hideaxisVal();
