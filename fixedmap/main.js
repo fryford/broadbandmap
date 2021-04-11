@@ -3,7 +3,7 @@ var pymChild = new pym.Child();
 ready();
 breaks = [0,0,8000,20000,30000,60000,900000];
 currLayer = 0;
-tilesources = ['https://fryford.github.io/broadbandmap/fixedmap/broadband2/{z}/{x}/{y}.pbf','https://fryford.github.io/broadbandmap/fixedmap/broadband/{z}/{x}/{y}.pbf'];
+tilesources = ['https://fryford.github.io/broadbandmap/fixedmap/broadband2/{z}/{x}/{y}.pbf','https://fryford.github.io/broadbandmap/fixedmap/broadband3/{z}/{x}/{y}.pbf'];
 tilelayerId = ["ukfixedbroadband2020q4","ukmobilebroadband2020q4"];
 
 console.log(tilelayerId[0])
