@@ -117,10 +117,11 @@
 
       #keyvalue {
         padding-left: 10px;
-        min-height: 30px;
+        min-height: 34px;
         color: #1b5f97;
 
       }
+
 
       #keyvaluehidden {
         height: 0px;
@@ -142,9 +143,6 @@
 
     @media (max-width: 600px) {
 
-      .key-item {
-        display:none;
-      }
 
       #deathLabel {
         display:none;
@@ -152,12 +150,17 @@
 
       }
 
+      .keydivs {
+        float:left;
+        margin-right:15px;
+      }
+
 
         #map {
         position:relative;
         top:0px;
-        margin-top:120px;
-        height: 350px;
+        margin-top:160px;
+        height: 400px;
         width: 100%;
         overflow:visible;
       }
@@ -174,7 +177,7 @@
 
       #keydiv {
         position:absolute;
-        top:-80px;
+        top:-120px;
         left:0px;
         width:100%;
         /* height:80px; */
@@ -186,6 +189,8 @@
       #keyvalue {
         padding-left: 10px;
         color: #1b5f97;
+        min-height:32px;
+        margin-bottom:3px;
 
       }
 
@@ -340,13 +345,12 @@
 
         }
 
-        .key-0 {
-          border-bottom: 1px solid #eee;
-        }
+
 
         .key-item {
           padding-left:4px;
           height:40px;
+          float:left
         }
 
         #msoacodetext {
@@ -356,6 +360,7 @@
 
 
         .key-0 {
+          margin-top:5px;
           height:45px;
         }
 
@@ -396,7 +401,12 @@
            text-transform: initial;
         }
 
-
+        .key-item-container {
+          margin-top: 10px;
+          width: 100%;
+          height: auto;
+          display: inline-block;
+        }
 
 
 
@@ -411,6 +421,16 @@
 
   <div id="map">
     <div id='keydiv'>
+      <div class="key-item-container">
+        <div class="key-item key-0 b fixed" style="top: 0px;">
+          <input id="radio0" class="input js-focusable input--radio" type="radio" name="timeOrTotal" value="Show fixed broadband speeds" style="float: left;">
+          <label class="legendlabel" for="radio0">Fixed</label>
+        </div>
+        <div class="key-item key-1 b mobile" style="top: 45px;">
+          <input id="radio1" class="input js-focusable input--radio" type="radio" name="timeOrTotal" value="Show mobile broaband speeds" style="float: left;">
+          <label class="legendlabel" for="radio1">Mobile</label>
+        </div>
+      </div>
       <h4 id="keyvalue"></h4>
     </div>
   </div>
@@ -434,16 +454,16 @@
 
   <div id="key"></div>
   <div id="source">
-    <h6>Source: Public Health England - Coronavirus Dashboard</h6>
-    <a href="https://api.coronavirus.data.gov.uk/v2/data?areaType=msoa&metric=newCasesBySpecimenDateRollingSum&format=csv" target="_blank">Data Download</a>
+    <h6>Source: Speedtest by Ookla Fixed and Mobile Performance Open Data</h6>
+    <a href="https://github.com/teamookla/ookla-open-data" target="_blank">More information</a>
   </div>
-  <div id="notes">
+  <!-- <div id="notes">
     <h6>Notes:</h6>
   <ol>
     <li>*Last 7 days for which reasonably complete data is available. Usually covering specimen data from around 5 days ago.</li>
     <li>Cases from pillar 1 and pillar 2 of the Government's testing programme are included.</li>
   </ol>
-  </div>
+  </div> -->
 
 
   <script defer src="https://cdn.ons.gov.uk/vendor/mapbox-gl/1.10.1/js/mapbox-gl.js"></script>

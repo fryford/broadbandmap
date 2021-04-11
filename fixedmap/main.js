@@ -2,16 +2,23 @@ var pymChild = new pym.Child();
 
 ready();
 breaks = [0,0,8000,20000,30000,60000,900000];
+currLayer = 0;
+tilesources = ['https://fryford.github.io/broadbandmap/fixedmap/broadband2/{z}/{x}/{y}.pbf','https://fryford.github.io/broadbandmap/fixedmap/broadband/{z}/{x}/{y}.pbf'];
+tilelayerId = ["ukfixedbroadband2020q4","ukmobilebroadband2020q4"];
+
+console.log(tilelayerId[0])
 
 function ready() {
+
+	d3.select("#radio0").property("checked",true);
 
 hoveredId = null;
 
 	map = new mapboxgl.Map({
 		container: "map",
 		style: "data/style.json",
-		center: [-3.5, 52.355],
-		zoom: 5,
+		center: [-1.54517,50.59954],
+		zoom: 8,
 		maxZoom: 18,
 		attributionControl: false
 	})
@@ -40,14 +47,12 @@ hoveredId = null;
 
 	d3.selectAll(".mapboxgl-ctrl-icon").attr("aria-hidden","false")
 
-
 	map.on("load", function() {
-		//map.addSource("area", { type: "geojson", data: areas });
 
 		map.addSource('squares', {
 			type: 'vector',
 			//tiles: ['http://localhost:8000/broadband/{z}/{x}/{y}.pbf'],
-			tiles: ['https://fryford.github.io/broadbandmap/fixedmap/broadband2/{z}/{x}/{y}.pbf'],
+			tiles: [tilesources[0]],
 			"promoteId": {
           "ukfixedbroadband2020q4": "quadkey"
         },
@@ -110,40 +115,6 @@ hoveredId = null;
         },
 		}, 'place_suburb');
 
-		// // Add buildings tileset
-		// map.addSource('building-tiles', {
-		// 	type: 'vector',
-		// 	tiles: ['https://cdn.ons.gov.uk/maptiles/administrative/lsoa/v1/buildings/{z}/{x}/{y}.pbf'],
-		// 	promoteId: {
-		// 		buildings: "AREACD"
-		// 	},
-		// 	minzoom: 8,
-		// 	maxzoom: 12,
-		// });
-		//
-		// // Add layer from the vector tile source with data-driven style
-		// map.addLayer({
-		// 	id: 'lsoa-building',
-		// 	type: 'fill',
-		// 	source: 'building-tiles',
-		// 	'source-layer': 'buildings',
-		// 	minzoom:8,
-		// 	maxzoom:17,
-		// 	paint: {
-		// 		'fill-color': ['case',
-		// 			['!=', ['feature-state', 'colour'], null],
-		// 			['feature-state', 'colour'],
-		// 			'rgba(255, 255, 255, 0)'
-		// 		],
-		// 		'fill-opacity': 0.8
-		// 	}
-		// }, 'place_suburb');
-
-
-
-
-
-
 
 
 		var bounds = new mapboxgl.LngLatBounds();
@@ -153,60 +124,253 @@ hoveredId = null;
 		// });
 
 
-		map.fitBounds([[-5.8,50.0],[1.9,55.9]]);
-
-
-			// for (key in dataAll) {
-			//
-			// //	console.log(key);
-			//
-			// 	map.setFeatureState({
-			// 		source: 'msoa-centroids',
-			// 		sourceLayer: 'msoacentroids',
-			// 		id: key
-			// 	}, {
-			// 		casesPI: Math.sqrt(dataAll[key]/Math.PI),
-			// 		cases: dataAll[key]
-			// 	});
-			// }
+		map.fitBounds([[-1.54517,50.59954],[-0.78141,50.93888]]);
 
 
 	});
 
 createKey()
 
+setTimeout(function(){
+	map.removeLayer('squarestiles');
+	map.removeLayer('squarestileslines');
+	map.removeSource('squares');
+
+	if(currLayer ==0) {
+
+		console.log("I'm here")
+		map.addSource('squares', {
+			type: 'vector',
+			//tiles: ['http://localhost:8000/broadband/{z}/{x}/{y}.pbf'],
+			tiles: [tilesources[1]],
+			"promoteId": {
+					"ukmobilebroadband2020q4": "quadkey"
+				},
+			minzoom:4,
+			maxzoom: 10,
+		});
+
+
+		map.addLayer({
+			id: 'squarestiles',
+			type: 'fill',
+			source: 'squares',
+			'source-layer': 'ukmobilebroadband2020q4',
+			minzoom:4,
+			maxzoom:20,
+			"background-color": "#ccc",
+			'paint': {
+					'fill-opacity':0.7,
+					'fill-outline-color':'rgba(0,0,0,0)',
+					'fill-color': {
+							// Refers to the data of that specific property of the polygon
+						'property': 'avg_d_kbps',
+						'default': '#666666',
+						// Prevents interpolation of colors between stops
+						'base': 0,
+						'stops': [
+							[breaks[0], '#feedde'],
+							[breaks[2], '#fdd0a2'],
+							[breaks[3], '#fdae6b'],
+							[breaks[4], '#fd8d3c'],
+							[breaks[5], '#e6550d'],
+							[breaks[6], '#a63603']
+
+						]
+					}
+
+				}
+		}, 'place_suburb');
+
+
+		map.addLayer({
+			id: 'squarestileslines',
+			type: 'line',
+			source: 'squares',
+			'source-layer': 'ukmobilebroadband2020q4',
+			minzoom:4,
+			maxzoom:20,
+			"background-color": "#ccc",
+			paint: {
+					'line-color': 'black',
+					"line-width": 3,
+					"line-opacity":
+					//1
+					[
+						'case',
+						['boolean', ['feature-state', 'hover'], false],
+						1,
+						0
+					]
+				},
+		}, 'place_suburb');
+
+
+	} else {
+
+		map.addSource('squares', {
+			type: 'vector',
+			//tiles: ['http://localhost:8000/broadband/{z}/{x}/{y}.pbf'],
+			tiles: [tilesources[0]],
+			"promoteId": {
+					"ukfixedbroadband2020q4": "quadkey"
+				},
+			minzoom:4,
+			maxzoom: 10,
+		});
+
+
+		map.addLayer({
+			id: 'squarestiles',
+			type: 'fill',
+			source: 'squares',
+			'source-layer': 'ukfixedbroadband2020q4',
+			minzoom:4,
+			maxzoom:20,
+			"background-color": "#ccc",
+			'paint': {
+					'fill-opacity':0.7,
+					'fill-outline-color':'rgba(0,0,0,0)',
+					'fill-color': {
+							// Refers to the data of that specific property of the polygon
+						'property': 'avg_d_kbps',
+						'default': '#666666',
+						// Prevents interpolation of colors between stops
+						'base': 0,
+						'stops': [
+							[breaks[0], '#feedde'],
+							[breaks[2], '#fdd0a2'],
+							[breaks[3], '#fdae6b'],
+							[breaks[4], '#fd8d3c'],
+							[breaks[5], '#e6550d'],
+							[breaks[6], '#a63603']
+
+						]
+					}
+
+				}
+		}, 'place_suburb');
+
+
+		map.addLayer({
+			id: 'squarestileslines',
+			type: 'line',
+			source: 'squares',
+			'source-layer': 'ukfixedbroadband2020q4',
+			minzoom:4,
+			maxzoom:20,
+			"background-color": "#ccc",
+			paint: {
+					'line-color': 'black',
+					"line-width": 3,
+					"line-opacity":
+					//1
+					[
+						'case',
+						['boolean', ['feature-state', 'hover'], false],
+						1,
+						0
+					]
+				},
+		}, 'place_suburb');
+
+	}
+
+
+},5000)
+
 
 	map.on("mousemove", "squarestiles", onMove);
-	map.on("mouseleave", "coronabound", onLeave);
+	map.on("mouseleave", "squarestiles", onLeave);
 	map.on("click", "corona", onClick);
 
 
 	function highlightArea(e) {
-	  if (e.length > 0) {
-	    if (hoveredId) {
-	      map.setFeatureState({
-	        source: 'squares',
-	        sourceLayer: 'ukfixedbroadband2020q4',
-	        id: hoveredId
-	      }, {
-	        hover: false
-	      });
-	    }
 
-			console.log(e[0])
-	    hoveredId = e[0].id;
+		if(currLayer == 0) {
 
-	    map.setFeatureState({
-	      source: 'squares',
-	      sourceLayer: 'ukfixedbroadband2020q4',
-	      id: hoveredId
-	    }, {
-	      hover: true
-	    });
+			if (typeof e !== "undefined") {
 
-	    setAxisVal(e[0].properties.avg_d_kbps);
+				map.setFeatureState({
+					source: 'squares',
+					sourceLayer: 'ukfixedbroadband2020q4',
+					id: hoveredId
+				}, {
+					hover: false
+				});
+
+				 hoveredId = e[0].id;
+
+		      map.setFeatureState({
+		        source: 'squares',
+		        sourceLayer: 'ukfixedbroadband2020q4',
+		        id: hoveredId
+		      }, {
+		        hover: true
+		      });
+
+					setAxisVal(e[0].properties.avg_d_kbps);
+				} else {
+
+					setAxisVal("");
+			    map.setFeatureState({
+			      source: 'squares',
+			      sourceLayer: 'ukfixedbroadband2020q4',
+			      id: hoveredId
+			    }, {
+			      hover: false
+			    });
+
+
+
+				}
+
+
+		} else {
+
+			if (typeof e !== "undefined") {
+
+				map.setFeatureState({
+					source: 'squares',
+					sourceLayer: 'ukmobilebroadband2020q4',
+					id: hoveredId
+				}, {
+					hover: false
+				});
+
+				 hoveredId = e[0].id;
+
+		      map.setFeatureState({
+		        source: 'squares',
+		        sourceLayer: 'ukmobilebroadband2020q4',
+		        id: hoveredId
+		      }, {
+		        hover: true
+		      });
+
+					setAxisVal(e[0].properties.avg_d_kbps);
+				} else {
+
+					setAxisVal("");
+			    map.setFeatureState({
+			      source: 'squares',
+			      sourceLayer: 'ukmobilebroadband2020q4',
+			      id: hoveredId
+			    }, {
+			      hover: false
+			    });
+
+
+
+				}
+
+		}
+
+
+
+
 	   // setScreenreader(e[0].properties.AREANM, json[e[0].properties.AREACD]);
-	  }
+
 	}
 
 	map.on('click', function(e) {
@@ -216,6 +380,9 @@ createKey()
 	function onMove(e) {
 		 highlightArea(e.features);
 	 }
+	 function onLeave(e) {
+			highlightArea(e.features);
+		}
 
 	function createKey() {
       keywidth = d3.select("#keydiv").node().getBoundingClientRect().width;
@@ -233,7 +400,7 @@ createKey()
         .style("margin-top", "5px")
         .style("margin-bottom", "5px")
         .style("margin-left", "10px")
-        .text("broadband speed Mbps");
+        .text("Speed Mbps");
 
 
 
@@ -242,10 +409,11 @@ createKey()
 
       stops = d3.zip(breaks,colour);
 
-      divs = svgkey.selectAll("div")
+      divs = svgkey.selectAll("blah")
         .data(breaks)
         .enter()
-        .append("div");
+        .append("div")
+				.attr("class","keydivs");
 
       divs.append("div")
         .style("height", "20px")
@@ -301,20 +469,20 @@ createKey()
 		}
 	}
 
-	function onLeave() {
-		map.setFilter("coronahover", ["==", "areacd", ""]);
-		map.setFilter("coronaboundhover", ["==", "areacd", ""]);
-
-		oldlsoa11cd = "";
-		hideaxisVal();
-	}
 
 	function setAxisVal(speed) {
 
-		d3.select("#keyvalue")
-			.style("font-weight", "bold")
-			.html("<span>" + d3.format(",.1f")(speed/1000) + " Mbps</span>")
+		if(speed != "") {
+			d3.select("#keyvalue")
+				.style("font-weight", "bold")
+				.html("<span>" + d3.format(",.1f")(speed/1000) + " Mbps</span>")
 
+		} else {
+			d3.select("#keyvalue")
+				.style("font-weight", "bold")
+				.html("")
+
+		}
 
 
 		// d3.select("#keyvaluehidden")
@@ -389,97 +557,6 @@ createKey()
 
 	}
 
-	function repaintLayer() {
-
-		layername = d3.select(this).attr("value");
-
-		if(layername == "All") {
-			for (key in dataAll) {
-
-			//	console.log(key);
-
-				map.setFeatureState({
-					source: 'msoa-centroids',
-					sourceLayer: 'msoacentroids',
-					id: key
-				}, {
-					casesPI: Math.sqrt(eval(dataAll[key])/Math.PI),
-					cases: dataAll[key]
-
-				});
-			}
-
-
-		} else if(layername == "Mar") {
-
-			for (key in dataAll) {
-
-			//	console.log(key);
-
-				map.setFeatureState({
-					source: 'msoa-centroids',
-					sourceLayer: 'msoacentroids',
-					id: key
-				}, {
-					casesPI: Math.sqrt(eval(dataMar[key])/Math.PI),
-					cases: dataMar[key]
-				});
-			}
-
-		} else if(layername == "Apr") {
-
-			for (key in dataAll) {
-
-			//	console.log(key);
-
-				map.setFeatureState({
-					source: 'msoa-centroids',
-					sourceLayer: 'msoacentroids',
-					id: key
-				}, {
-					casesPI: Math.sqrt(eval(dataApr[key])/Math.PI),
-					cases: dataApr[key]
-				});
-			}
-
-		} else if(layername == "May") {
-
-			for (key in dataAll) {
-
-			//	console.log(key);
-
-				map.setFeatureState({
-					source: 'msoa-centroids',
-					sourceLayer: 'msoacentroids',
-					id: key
-				}, {
-					casesPI: Math.sqrt(eval(dataMay[key])/Math.PI),
-					cases: dataMay[key]
-				});
-			}
-
-		} else if(layername == "June") {
-
-			for (key in dataAll) {
-
-			//	console.log(key);
-
-				map.setFeatureState({
-					source: 'msoa-centroids',
-					sourceLayer: 'msoacentroids',
-					id: key
-				}, {
-					casesPI: Math.sqrt(eval(dataJune[key])/Math.PI),
-					cases: dataJune[key]
-				});
-			}
-
-		}
-
-
-
-
-	}
 
 	function hideaxisVal() {
 		d3
