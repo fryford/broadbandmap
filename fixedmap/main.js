@@ -131,12 +131,18 @@ hoveredId = null;
 
 createKey()
 
-setTimeout(function(){
+function changeSource () {
 	map.removeLayer('squarestiles');
 	map.removeLayer('squarestileslines');
 	map.removeSource('squares');
 
-	if(currLayer ==0) {
+	if(d3.select("#radio0").property("checked")) {
+		currLayer = 0;
+	} else {
+		currLayer = 1;
+	}
+
+	if(currLayer !=0) {
 
 		console.log("I'm here")
 		map.addSource('squares', {
@@ -276,8 +282,10 @@ setTimeout(function(){
 
 	}
 
+highlightArea(e.features);
+}
 
-},5000)
+d3.selectAll(".key-item").on("click",changeSource);
 
 
 	map.on("mousemove", "squarestiles", onMove);
@@ -669,30 +677,20 @@ $(document).on('input', '.clearable', function(){
 
 		var tilechecker = setInterval(function(){
 			 features=null
-			 features = map.queryRenderedFeatures(point,{layers: ['coronabound']});
+			 features = map.queryRenderedFeatures(point,{layers: ['squarestiles']});
 
 			 if(features.length != 0){
 
 				 setTimeout(function(){
-		 			features = map.queryRenderedFeatures(point,{layers: ['coronabound']});
+		 			features = map.queryRenderedFeatures(point,{layers: ['squarestiles']});
 
 		 		 //onrender(),
 		 		//map.setFilter("coronahover", ["==", "areacd", features[0].properties.areacd]);
 
-				map.setFilter("coronahover", [
-					"==",
-					"areacd",
-					features[0].properties.areacd
-				]);
-
-				map.setFilter("coronaboundhover", [
-					"==",
-					"areacd",
-					features[0].properties.areacd
-				]);
+				highlightArea(features);
 				//var features = map.queryRenderedFeatures(point);
 				disableMouseEvents();
-				setAxisVal(features[0].properties.areanm, features[0].properties.areanmhc, features[0].properties.areacd);
+				//setAxisVal(features[0].properties.areanm, features[0].properties.areanmhc, features[0].properties.areacd);
 				//updatePercent(features[0]);
 			},400);
 		 		clearInterval(tilechecker);
@@ -706,14 +704,14 @@ $(document).on('input', '.clearable', function(){
 	};
 
 	function disableMouseEvents() {
-			map.off("mousemove", "coronabound", onMove);
-			map.off("mouseleave", "coronabound", onLeave);
+			map.off("mousemove", "squarestiles", onMove);
+			map.off("mouseleave", "squarestiles", onLeave);
 	}
 
 	function enableMouseEvents() {
-			map.on("mousemove", "coronabound", onMove);
+			map.on("mousemove", "squarestiles", onMove);
 			map.on("click", "corona", onClick);
-			map.on("mouseleave", "coronabound", onLeave);
+			map.on("mouseleave", "squarestiles", onLeave);
 	}
 
 
