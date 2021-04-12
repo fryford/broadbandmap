@@ -41,7 +41,7 @@ hoveredId = null;
 	// }));
 
 	map.addControl(new mapboxgl.AttributionControl({
-		compact:true,customAttribution:"© Crown copyright and database rights "+new Date(Date.now()).getFullYear()+" OS 100019153"
+		compact:true,customAttribution:"Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)"
 		})
 	);
 
