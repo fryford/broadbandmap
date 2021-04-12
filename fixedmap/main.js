@@ -436,7 +436,8 @@ d3.selectAll(".key-item").on("click",changeSource);
           } else {
             //return dvc.nullColour;
           }
-        });
+        })
+				.style("opacity",0.7);
 
       divs.append("p")
         .attr("float", "left")
